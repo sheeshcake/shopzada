@@ -1,62 +1,71 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-    Link
+    Link,
+    Redirect,
+    withRouter
 } from 'react-router-dom';
+import {Container, Button, Card, Form, Col, Row} from 'react-bootstrap';
 
 
 
-class Login extends Component {
-    constructor(props) {
-        super(props)
-    
-        this.state = {
-            email: "",
-            password: ""
+function Login() {
+
+
+    const [user, setUser] = useState({
+        email: "",
+        password: ""
+    })
+
+    const [auth, setAuth] = useState([])
+
+
+    const viewAuth = () => {
+        const data = JSON.parse(localStorage.getItem("user"))
+        if(data){
+            setAuth(data)
+            return true
         }
+        return false
     }
 
-    handleEmailChange = (event) => {
-        this.setState({
-            email: event.target.value
-        })
-    }
-    handlePasswordChange = (event) =>{
-        this.setState({
-            password: event.target.value
-        })
-    }
-    handleLogin = event => {
-        alert(this.state.email + " " + this.state.password);
+    const handleLogin = async (event) => {
         event.preventDefault();
+        const data = await axios.post("/api/login", user)
+        localStorage.setItem("user", JSON.stringify(data.data))
     }
-    render(){
-        return ( 
-            <div class="d-flex justify-content-center">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Login</h3>
-                    </div>
-                    <div class="card-body">
-                        <form onSubmit={this.handleLogin}>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" value={this.state.email} class="form-control" onChange={this.handleEmailChange}/>
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" value={this.state.password} class="form-control" onChange={this.handlePasswordChange}/>
-                            </div>
-                            <input type="submit" class="btn btn-primary" value="Login"/>
-                        </form>
-                        <hr/>
-                        <Link to="/adminlogin">
-                            <a class="btn btn-primary">Login as Admin</a>
+    return ( 
+        <Container className="d-flex justify-content-center">
+            {viewAuth() ? <Redirect to="/cart" /> :
+            <Card>
+                <Card.Header>
+                    <h3>Login</h3>
+                </Card.Header>
+                <Card.Body>
+                    <Form onSubmit={handleLogin}>
+                        <Form.Group>
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control type="email" onChange={(e)=> setUser({...user, email: e.target.value})}/>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" onChange={(e)=> setUser({...user, password: e.target.value})}/>
+                        </Form.Group>
+                        <Button type="submit">Login</Button>
+                    </Form>
+                    <hr/>
+                    <Container className="justify-content-center">
+                        <Link to="/register">
+                            <Button>Register</Button>
                         </Link>
-                    </div>
-                </div>
-            </div>
-        )
-    }
+                        <Link to="/adminlogin">
+                            <Button>Login as Admin</Button>
+                        </Link>
+                    </Container>
+                </Card.Body>
+            </Card>
+            }
+        </Container>
+    )
 
 }
  

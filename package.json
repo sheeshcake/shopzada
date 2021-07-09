@@ -26,6 +26,7 @@
         "webpack": "^5.43.0"
     },
     "dependencies": {
+        "react-bootstrap": "^1.6.1",
         "react-router-dom": "^5.2.0"
     }
 }
