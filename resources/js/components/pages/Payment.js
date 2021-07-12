@@ -45,7 +45,6 @@ export default function Payment({total, carts}) {
         if(total > 0){
             axios.put('/api/pay', {carts: carts, data: data}).then((resp) => {
                 console.log(resp)
-                history.push('/products')
             })
         }
     }

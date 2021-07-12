@@ -3677,7 +3677,6 @@ function Payment(_ref) {
         data: data
       }).then(function (resp) {
         console.log(resp);
-        history.push('/products');
       });
     }
   };

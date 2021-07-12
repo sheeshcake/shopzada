@@ -67,8 +67,9 @@ class TransactionController extends Controller
         ]);
         foreach($carts as $cart){
             if($cart["is_checked"]){
-                $transaction = Transaction::create([
-                    "cart_id" => $cart["cart_id"],
+                $transaction = Transaction::
+                where("cart_id", "=", $cart["cart_id"])
+                ->update([
                     "status" => "paid"
                 ]);
             }
