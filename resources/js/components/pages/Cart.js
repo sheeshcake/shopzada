@@ -99,7 +99,7 @@ function Cart() {
                     )
                 })}
             </Row>
-            <Payment total={total} carts={carts} getCart={getCart}></Payment>
+            <Payment total={total} carts={carts}></Payment>
         </Container>
     )
 }

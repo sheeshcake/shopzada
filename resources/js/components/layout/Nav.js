@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-
-import {Link} from 'react-router-dom';
+import {Button} from "react-bootstrap";
+import {Link, useHistory} from 'react-router-dom';
 
 const Nav = () => {
 
@@ -9,6 +9,13 @@ const Nav = () => {
             checkUser()
         })
     }, [])
+
+    const history = useHistory()
+
+    const logout = () => {
+        localStorage.clear()
+        history.push("/login")
+    }
 
 
     const checkUser = () => {
@@ -39,11 +46,16 @@ const Nav = () => {
                     </Link>
                     {
                         user != null ? 
+                        <>
                         <Link to="/cart">
                             <li class="nav-item">
                                 <a class="nav-link">Cart</a>
                             </li>
                         </Link>
+                            <li class="nav-item">
+                                <Button onClick={logout} className="nav-link">Logout</Button>
+                            </li>
+                        </>
                         :
                         <Link to="/login">
                             <li class="nav-item">

@@ -3,10 +3,10 @@ import {Elements} from '@stripe/react-stripe-js'
 import {loadStripe} from '@stripe/stripe-js'
 import StripeCheckout  from 'react-stripe-checkout'
 import { useHistory } from 'react-router-dom'
-import {Card, Form, Button} from "react-bootstrap"
+import {Card} from "react-bootstrap"
 import axios from 'axios'
 
-export default function Payment({total, carts, getCart}) {
+export default function Payment({total, carts}) {
 
     useEffect(() => {
         checkUser()
@@ -45,7 +45,7 @@ export default function Payment({total, carts, getCart}) {
         if(total > 0){
             axios.put('/api/pay', {carts: carts, data: data}).then((resp) => {
                 console.log(resp)
-                getCart
+                history.push('/products')
             })
         }
     }
