@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Cart;
+use App\Models\Transaction;
+use DB;
 
 class CartController extends Controller
 {
@@ -16,7 +18,16 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $cart = Cart::join("products", "products.id", "=", "carts.product_id")
-                    ->where("carts.user_id", "=", $request->user_id)->get(["carts.*", "products.*", "carts.id as cart_id"])->toArray();
+                    ->join("transactions", "transactions.cart_id", "=", "carts.id")
+                    ->where([
+                        ["carts.user_id", "=", $request->user_id],
+                        ["transactions.status", "=", "unpaid"]
+                        ])
+                    ->get(["carts.*", "products.*", "carts.id as cart_id"])->toArray();
+        foreach($cart as $index => $c){
+            $cart[$index]["is_checked"] = false;
+        }
+        
         return response()->json([
             'success' => true,
             'cart' => $cart
@@ -30,12 +41,14 @@ class CartController extends Controller
      */
     public function add(Request $request)
     {
-        $cart = Cart::where([
-            ["user_id", "=", $request->user_id],
-            ["product_id", "=", $request->product_id]
-        ])->get()->toArray();
+        $cart = Cart::join('transactions', 'transactions.cart_id', "=", "carts.id")
+            ->where([
+            ["carts.user_id", "=", $request->user_id],
+            ["carts.product_id", "=", $request->product_id],
+            ["transactions.status", "!=", "paid"]
+        ])->get(["carts.*", "transactions.*"])->toArray();
         if(count($cart) > 0){
-            $data = Cart::where("id", "=", $cart[0]["id"])
+            $data = Cart::where("id", "=", $cart[0]["cart_id"])
                 ->update(["product_count" => $cart[0]["product_count"] + 1]);
             if($data){
                 return response()->json([
@@ -49,6 +62,10 @@ class CartController extends Controller
                 "user_id" => $request->user_id,
                 "product_id" => $request->product_id,
                 "product_count" => 1
+            ]);
+            Transaction::create([
+                "cart_id" => $data->id,
+                "status" => "unpaid"
             ]);
             if($data){
                 return response()->json([

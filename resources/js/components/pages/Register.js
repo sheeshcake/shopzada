@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Container,
     Card,
@@ -7,7 +7,7 @@ import {
     Button
 } from "react-bootstrap";
 import {
-    Redirect
+    useHistory
  } from "react-router-dom";
 
 const Register = () => {
@@ -18,17 +18,19 @@ const Register = () => {
         password: ""
     })
 
+    const history = useHistory()
+
+    useEffect(()=>{
+        viewAuth()
+    },[])
+
     const [response, setResponse] = useState([])
     
-    const [auth, setAuth] = useState([])
 
     const viewAuth = () => {
-        const data = JSON.parse(localStorage.getItem("user"))
-        if(data){
-            setAuth(data)
-            return true
+        if(JSON.parse(localStorage.getItem("user"))){
+            history.push("/login")
         }
-        return false
     }
 
     const handleRegister = async(event) => {
@@ -36,14 +38,14 @@ const Register = () => {
         try{
             let response = await axios.post('/api/register', data)
             setResponse(response)
+            history.push("/login")
         }catch(e){
-            
+            console.log(data)
         }
     }
 
     return (
         <Container>
-            {viewAuth() ? <Redirect to="/cart" /> :
             <Card>
                 <Card.Header>
                     <h3>Register</h3>
@@ -68,7 +70,6 @@ const Register = () => {
                     </Form>
                 </Card.Body>
             </Card>
-            }
         </Container>
     )
 }

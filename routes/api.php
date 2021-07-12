@@ -31,4 +31,5 @@ Route::post('cart', [CartController::Class, 'index']);
 Route::post('update', [CartController::Class, 'update']);
 Route::post('delete', [CartController::class, 'delete']);
 Route::post('purchase', [TransactionController::class, 'purchase']);
+Route::put('pay', [TransactionController::class, 'pay']);
 Route::get('products', [ProductsController::class, 'index']);

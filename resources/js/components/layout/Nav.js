@@ -7,13 +7,12 @@ const Nav = () => {
     useEffect(() => {
         setInterval(() => {
             checkUser()
-            }, [])
+        })
     }, [])
 
-    const forceUpdate = React.useCallback(() => {}, []);
+
     const checkUser = () => {
         setUser(localStorage.getItem("user"))
-        forceUpdate()
     }
 
     const [user, setUser] = useState(localStorage.getItem("user"))    
@@ -23,7 +22,7 @@ const Nav = () => {
             <Link to="/">
                 <a class="navbar-brand">Navbar</a>
             </Link>
-            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -39,7 +38,7 @@ const Nav = () => {
                         </li>
                     </Link>
                     {
-                        localStorage.getItem("user") != null ?                  
+                        user != null ? 
                         <Link to="/cart">
                             <li class="nav-item">
                                 <a class="nav-link">Cart</a>

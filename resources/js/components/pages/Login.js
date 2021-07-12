@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {
     Link,
-    Redirect,
-    withRouter
+    useHistory
 } from 'react-router-dom';
 import {Container, Button, Card, Form, Col, Row} from 'react-bootstrap';
 
@@ -11,6 +10,12 @@ import {Container, Button, Card, Form, Col, Row} from 'react-bootstrap';
 function Login() {
 
 
+    let history = useHistory()
+
+    useEffect(() => {
+        viewAuth()
+    }, [])
+
     const [user, setUser] = useState({
         email: "",
         password: ""
@@ -18,24 +23,22 @@ function Login() {
 
     const [auth, setAuth] = useState([])
 
-
     const viewAuth = () => {
-        const data = JSON.parse(localStorage.getItem("user"))
-        if(data){
+        let data
+        if(data = JSON.parse(localStorage.getItem("user"))){
             setAuth(data)
-            return true
+            history.push("/cart")
         }
-        return false
     }
 
     const handleLogin = async (event) => {
         event.preventDefault();
         const data = await axios.post("/api/login", user)
         localStorage.setItem("user", JSON.stringify(data.data))
+        history.push("/cart")
     }
     return ( 
         <Container className="d-flex justify-content-center">
-            {viewAuth() ? <Redirect to="/cart" /> :
             <Card>
                 <Card.Header>
                     <h3>Login</h3>
@@ -63,7 +66,6 @@ function Login() {
                     </Container>
                 </Card.Body>
             </Card>
-            }
         </Container>
     )
 
